@@ -22,7 +22,7 @@ extension Date {
     // MARK: - for localized
     func toDetailViewLocalized() -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en")
+        dateFormatter.locale = Locale(identifier: String(localized: "en"))
         dateFormatter.dateFormat = String(localized: "yyyy년 M월 d일 a h시 mm분") // January 26, 2025, 4:48 PM
         return dateFormatter.string(from: self)
     }

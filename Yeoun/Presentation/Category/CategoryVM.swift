@@ -40,8 +40,22 @@ class CategoryReactor: Reactor {
         switch action {
         case .loadData:
             Logger.print("LoadData")
-            let item = repo.fetchCategory(categoryID)
-            return .just(.setData(item: item))
+            if let item = repo.fetchCategory(categoryID) {
+                
+                // (v1.2) detailItemList를 최신 날짜 기준으로 정렬
+                let newItem = CategoryItem(
+                    id: item.id,
+                    title: item.title,
+                    subtitle: item.subtitle,
+                    detailIdList: item.detailIdList.sorted {
+                        $0.date > $1.date
+                    }
+                )
+                
+                return .just(.setData(item: newItem))
+            }
+            return .just(.pass)
+            
             
         case .updateTitle(let title):
             Logger.print("Update title : \(title)")

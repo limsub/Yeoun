@@ -8,6 +8,8 @@
 import UIKit
 import FirebaseCore
 import FirebaseAnalytics
+import RealmSwift
+import GoogleMobileAds
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,6 +20,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         Analytics.logEvent(AnalyticsEventAppOpen, parameters: nil)
         
+        // Initialize the Google Mobile Ads SDK
+        GADMobileAds.sharedInstance().start(completionHandler: nil)
+//        UserDefaults.standard.set(true , forKey: "isMyDevice")
+        
+        // Realm
+        let config = Realm.Configuration(
+            schemaVersion: 2) { migration, oldSchemaVersion in
+                if oldSchemaVersion < 2 {
+                    migration.enumerateObjects(
+                        ofType: DetailDBDTO.className()) { oldObject, newObject in
+                            
+                            guard let oldObject = oldObject, let newObject = newObject else { return }
+                            
+                            // 기존 content 값 가져옴
+                            let content = oldObject["content"] as? String ?? ""
+                            
+                            // 첫 줄까지 추출
+                            let firstLine = content.components(separatedBy: .newlines).first ?? ""
+                            
+                            // schema version 2에 새로 추가한 "title"에 값 설정
+                            newObject["title"] = firstLine
+                        }
+                }
+            }
+        Realm.Configuration.defaultConfiguration = config
+
         return true
     }
 

@@ -61,6 +61,8 @@ class DetailReactor: Reactor {
         switch mutation {
         case .setData(let item):
             newState.detailItem = item
+            Logger.print("title : \(item?.title)")
+            Logger.print("content : \(item?.content)")
             
         case .pass:
             Logger.print("pass")

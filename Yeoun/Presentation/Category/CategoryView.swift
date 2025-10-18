@@ -25,24 +25,12 @@ class CategoryView: BaseBackgroundView {
         return view
     }()
     
-//    lazy var bannerView = {
-//        let view = GADBannerView(adSize: GADAdSizeBanner)
-//        view.alpha = 1
-//        // test id : ca-app-pub-3940256099942544/2435281174
-//        // real id : ca-app-pub-8155830639201287/4652031220
-//        let testId = "ca-app-pub-3940256099942544/2435281174"
-//        let realId = "ca-app-pub-8155830639201287/4652031220"
-//        let isMyDevice = UserDefaults.standard.bool(forKey: "isMyDevice")
-//        view.adUnitID = isMyDevice ? testId : realId
-//        view.translatesAutoresizingMaskIntoConstraints = false
-//        view.load(GADRequest())
-//        return view
-//    }()
+    let bannerView = GADBannerViewWrapper(type: .categoryBanner)
     
     override func addSubViews() {
         super.addSubViews()
         
-        [tableView, plusButton].forEach {
+        [tableView, plusButton, bannerView].forEach {
             self.addSubview($0)
         }
     }
@@ -50,17 +38,15 @@ class CategoryView: BaseBackgroundView {
     override func layouts() {
         super.layouts()
         
-//        bannerView.snp.makeConstraints { make  in
-//            make.horizontalEdges.equalTo(self)
-//            make.bottom.equalTo(self.safeAreaLayoutGuide)
-//            make.height.equalTo(60)
-//        }
+        bannerView.snp.makeConstraints { make in
+            make.bottom.equalTo(self)
+            make.horizontalEdges.equalToSuperview()
+        }
         
         tableView.snp.makeConstraints { make in
             make.horizontalEdges.equalTo(self.safeAreaLayoutGuide)
             make.top.equalTo(self.safeAreaLayoutGuide)
-//            make.bottom.equalTo(bannerView.snp.top)
-            make.bottom.equalToSuperview()
+            make.bottom.equalTo(bannerView.snp.top)
         }
         
         plusButton.snp.makeConstraints { make in
@@ -116,7 +102,15 @@ class CategoryTableViewCell: BaseTableViewCell {
     }
     
     func setUp(item: DetailItem) {
-        self.firstSentenceLabel.text = item.content
+//        self.firstSentenceLabel.text = item.content
+        
+        // title이 없으면 content의 값을 사용
+        if (item.title.isEmpty) {
+            self.firstSentenceLabel.text = item.content
+        } else {
+            self.firstSentenceLabel.text = item.title
+        }
+        
         self.dateLabel.text = item.date
             .toDate(to: .detailDTODate)?
             .toString(of: .detailCellDateFormat)

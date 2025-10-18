@@ -25,25 +25,12 @@ class HomeView: BaseBackgroundView {
         return view
     }()
     
-//    lazy var bannerView = {
-//        let view = GADBannerView(adSize: GADAdSizeBanner)
-//        view.alpha = 1
-//        // test id : ca-app-pub-3940256099942544/2435281174
-//        // real id : ca-app-pub-8155830639201287/7653012351
-//        let testId = "ca-app-pub-3940256099942544/2435281174"
-//        let realId = "ca-app-pub-8155830639201287/7653012351"
-//        let isMyDevice = UserDefaults.standard.bool(forKey: "isMyDevice")
-//        view.adUnitID = isMyDevice ? testId : realId
-//        view.translatesAutoresizingMaskIntoConstraints = false
-//        view.load(GADRequest())
-//        return view
-//    }()
-    
+    let bannerView = GADBannerViewWrapper(type: .homeBanner)
     
     override func addSubViews() {
         super.addSubViews()
         
-        [tableView, plusButton].forEach {
+        [tableView, plusButton, bannerView].forEach {
             self.addSubview($0)
         }
     }
@@ -51,22 +38,19 @@ class HomeView: BaseBackgroundView {
     override func layouts() {
         super.layouts()
         
-//        bannerView.snp.makeConstraints { make  in
-//            make.horizontalEdges.equalTo(self)
-//            make.bottom.equalTo(self.safeAreaLayoutGuide)
-//            make.height.equalTo(60)
-//        }
+        bannerView.snp.makeConstraints { make in
+            make.bottom.horizontalEdges.equalToSuperview()
+        }
         
         tableView.snp.makeConstraints { make in
             make.top.horizontalEdges.equalTo(self.safeAreaLayoutGuide)
-//            make.bottom.equalTo(bannerView.snp.top)
-            make.bottom.equalToSuperview()
+            make.bottom.equalTo(bannerView.snp.top)
         }
-        
+
         plusButton.snp.makeConstraints { make in
             make.size.equalTo(60)
             make.trailing.equalTo(self).inset(16)
-            make.bottom.equalTo(self).inset(62)    // tabbar 생기면 111
+            make.bottom.equalTo(self).inset(62)
         }
     }
     

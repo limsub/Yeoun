@@ -126,6 +126,7 @@ extension MakeDetailViewController {
         let id = Date().toString(of: .dtoID)
         let newItem: DetailItem = .init(
             id: id ,
+            title: mainView.titleTextField.text ?? "",
             content: mainView.textView.text ?? "",
             date: Date().toString(of: .detailDTODate)
         )
